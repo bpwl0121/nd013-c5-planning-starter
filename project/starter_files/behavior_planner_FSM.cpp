@@ -79,7 +79,7 @@ double BehaviorPlannerFSM::get_look_ahead_distance(const State& ego_state) {
   // using a comfortable deceleration.
   auto look_ahead_distance = 1.0;  // <- Fix This
 
-  // the distance with velocity and accel, the time comes from the FSM, no other time mentioned 
+  // the distance with velocity and accel, the time comes from the FSM class
   look_ahead_distance= velocity_mag*this->_lookahead_time+0.5*accel_mag*this->_lookahead_time*this->_lookahead_time;
   // LOG(INFO) << "Calculated look_ahead_distance: " << look_ahead_distance;
 
@@ -174,6 +174,8 @@ State BehaviorPlannerFSM::state_transition(const State& ego_state, State goal,
     // TODO-maintain the same goal when in DECEL_TO_STOP state: Make sure the
     // new goal is the same as the previous goal (_goal). That way we
     // keep/maintain the goal at the stop line.
+
+    // just keep the goal as before
     goal = this->_goal;  // <- Fix This
 
     // TODO: It turns out that when we teleport, the car is always at speed
@@ -203,6 +205,8 @@ State BehaviorPlannerFSM::state_transition(const State& ego_state, State goal,
     // TODO-maintain the same goal when in STOPPED state: Make sure the new goal
     // is the same as the previous goal. That way we keep/maintain the goal at
     // the stop line. goal = ...;
+
+    // keep the goal as before because of the _active_maneuver is stopped
        goal = this->_goal;  // Keep previous goal. Stay where you are. // <- Fix This
 
     long long stopped_secs =
@@ -214,6 +218,8 @@ State BehaviorPlannerFSM::state_transition(const State& ego_state, State goal,
     if (stopped_secs >= _req_stop_time && tl_state.compare("Red") != 0) {
       // TODO-move to FOLLOW_LANE state: What state do we want to move to, when
       // we are "done" at the STOPPED state?
+
+      // change the _active_maneuver to the follow_lane 
       _active_maneuver = FOLLOW_LANE;  // <- Fix This
       // LOG(INFO) << "BP - changing to FOLLOW_LANE";
     }
